@@ -1,18 +1,19 @@
 const prisma = require("../prisma");
-const { faker } = require('@faker-js/faker');
+const { faker } = require("@faker-js/faker");
 
 /** Seeds the database with random names from the faker API */
 const seed = async () => {
-
   for (let i = 0; i < 100; i++) {
-
     const randomFirstName = faker.person.firstName();
     const randomLastName = faker.person.lastName();
     const gpa = (Math.random() * 4).toFixed(2);
 
-    await prisma.student.create({
-      data: {
-
+    await prisma.student.upsert({
+      where: {
+        email: `${randomFirstName.toLowerCase()}.${randomLastName.toLowerCase()}@students.com`,
+      },
+      update: {},
+      create: {
         firstName: randomFirstName,
         lastName: randomLastName,
         email: `${randomFirstName.toLowerCase()}.${randomLastName.toLowerCase()}@students.com`,
@@ -33,4 +34,4 @@ seed()
     process.exit(1);
   });
 
-  module.exports = seed;
+module.exports = seed;
